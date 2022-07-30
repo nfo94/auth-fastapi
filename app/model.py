@@ -7,6 +7,32 @@ class PostSchema(BaseModel):
     content: int = Field(default=None)
 
     class Config:
-        schema_extra = {
-            "post_demo": {"title": "example title", "content": "example content"}
+        schema = {"post_demo": {"title": "example title", "content": "example content"}}
+
+
+class UserSchema(BaseModel):
+    fullname: str = Field(default=None)
+    email: EmailStr = Field(default=None)
+    password: str = Field(default=None)
+
+    class Config:
+        schema = {
+            "user_demo": {
+                "name": "example name",
+                "email": "example email",
+                "password": "example password",
+            }
+        }
+
+
+class UserLoginSchema(BaseModel):
+    email: EmailStr = Field(default=None)
+    password: str = Field(default=None)
+
+    class Config:
+        schema = {
+            "user_demo": {
+                "email": "example email",
+                "password": "example password",
+            }
         }
