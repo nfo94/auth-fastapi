@@ -1,7 +1,6 @@
-import uvicorn
 from fastapi import FastAPI, Body
 from app.model import PostSchema, UserSchema, UserLoginSchema
-from app.auth.jwt_handler import signJWT
+from app.auth.jwt_handler import sign_jwt
 
 posts = [
     {"id": 1, "title": "Elden Ring", "text": "Elden Ring is the best game ever"},
@@ -43,7 +42,7 @@ def add_post(post: PostSchema):
 @app.post("/user/signup", tags=["user"])
 def user_signup(user: UserSchema = Body(default=None)):
     users.append(user)
-    return signJWT(user.email)
+    return sign_jwt(user.email)
 
 
 def check_user(data: UserLoginSchema):
@@ -56,5 +55,5 @@ def check_user(data: UserLoginSchema):
 @app.post("/user/login", tags=["user"])
 def user_login(user: UserLoginSchema = Body(default=None)):
     if check_user(user):
-        return signJWT(user.email)
+        return sign_jwt(user.email)
     return {"error": "Invalid login details"}
