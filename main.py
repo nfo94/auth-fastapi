@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, Depends
 from app.model import PostSchema, UserSchema, UserLoginSchema
 from app.auth.jwt_handler import sign_jwt
+from app.auth.jwt_bearer import jwt_bearer
 
 posts = [
     {"id": 1, "title": "Elden Ring", "text": "Elden Ring is the best game ever"},
@@ -23,16 +24,15 @@ def get_posts():
 
 
 @app.get("/posts/{id}", tags=["posts"])
-def get_post(id: int):
-    def get_one_post(id: int):
-        if id > len(posts):
-            return {"error": "This post does not exist"}
-        for post in posts:
-            if post["id"] == id:
-                return {"data": post}
+def get_one_post(id: int):
+    if id > len(posts):
+        return {"error": "This post does not exist"}
+    for post in posts:
+        if post["id"] == id:
+            return {"data": post}
 
 
-@app.post("/posts", tags=["posts"])
+@app.post("/posts", dependencies=[Depends(jwt_bearer())], tags=["posts"])
 def add_post(post: PostSchema):
     post.id = len(posts) + 1
     posts.append(post.dict())
